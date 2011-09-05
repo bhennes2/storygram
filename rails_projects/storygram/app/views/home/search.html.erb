@@ -1,0 +1,12 @@
+User results for <b><%= @searchparam %></b>
+
+<div id="search_users_result" class="filmstrip" >
+	<ul class="imageRow">
+      <% @users.each do |user| %>
+        <li>
+            <%= image_tag user.profile_picture %>
+            <h3><%= link_to user.username, user_path(user.id) %></h3>
+        </li>
+      <% end %>
+    </ul>
+</div>
