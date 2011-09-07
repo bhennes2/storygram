@@ -57,7 +57,7 @@ function onLoad() {
 		  		"link" :"<%= media.link %>",
 				"options" : {
                             // set the full HTML for the info window
-                            "infoHtml": "<img src=<%= media.images.thumbnail.url %> />"
+                            "infoHtml": "<img src= <%= media.images.thumbnail.url %> />"
                           },
        			'durationEvent':false // Notes: not "false". And no trailing comma.
      		}<% if media != @media.last %>,<%end%>

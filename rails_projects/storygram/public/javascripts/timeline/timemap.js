@@ -268,10 +268,7 @@ TimeMap.init = function(config) {
             {
                 width:          "80%", 
                 intervalUnit:   intervals[0], 
-                intervalPixels: 100,
-                zoomIndex: 10
-                
-                
+                intervalPixels: 70
             },
             {
                 width:          "20%", 
