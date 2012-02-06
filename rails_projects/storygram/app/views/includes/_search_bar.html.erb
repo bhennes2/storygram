@@ -1,10 +1,7 @@
 <% form_tag search_path do %>
-	User Search:<br/> <%= text_field_tag :q, @q, :class => "text" %>
+	User Search: <%= text_field_tag :q, @q, :class => "text" %>
 <% end %>
 <% form_tag search_tags_path do %>
-	Tag Search:<br/> <%= text_field_tag :q, @q, :class => "text" %>
+	Tag Search: <%= text_field_tag :q, @q, :class => "text" %>
 <% end %>
-<br/>
-<%= link_to "MY FEED", self_path %>
-<br/>
-<%= link_to "POPULAR", popular_path %>
+What's New: <%= link_to "MY FEED", self_path %> <%= link_to "POPULAR", popular_path %>

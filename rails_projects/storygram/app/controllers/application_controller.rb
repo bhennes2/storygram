@@ -14,3 +14,8 @@ class ApplicationController < ActionController::Base
     end
   end
 end
+
+class Q < ActiveRecord::Base
+	#validates_presence_of :q
+
+end

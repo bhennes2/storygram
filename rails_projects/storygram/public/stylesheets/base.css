@@ -12,7 +12,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 html {
 	height: 100%;
 	background-image: url('/images/soft_wallpaper.png'); 
-    background-repeat: repeat-x repeat-y;
+    background-repeat: repeat;
 }
 
 a {
@@ -69,10 +69,20 @@ h2 {
 }
 
 #logo {
-	width: 1020px;
+	width: 500px;
 	padding-top: 5px;
 	padding-left: 5px;
 	float: left;
+}
+
+#slogan {
+	float: left;
+	text-transform: uppercase;
+	vertical-align: center;
+	padding-top: 25px;
+	color:#CC3300;
+	font-size: 18px;
+	text-decoration: em;
 }
 
 #content {
@@ -88,12 +98,27 @@ h2 {
 }
 
 #searchbar {
-	height: 135px;
+	padding-bottom: 15px;
 	float:left;
+	
+}
+
+#searchbar p {
+	padding-top:5px;
+}
+
+#searchbar_notes {
+	padding-top: 10px;
+	color: #cc3300;
+}
+
+#searchbar img {
+	height: 25px;
+	width: 15px;
 }
 
 #results {
-	height: 390px;
+	height: 410px;
 	float:left;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -105,7 +130,10 @@ h2 {
 
 #results ul li {
 	width: 150px;
+	height: 150px;
 	float: left;
+	text-align: center;
+	vertical-align: center;
 }
 
 #map {
@@ -121,6 +149,39 @@ h2 {
 	height:175px;
 	margin-top:20px;
 	float:left;
+	
+}
+
+#dates {
+	width:1020px;
+	float: left;
+	padding-top: 5px;
+}
+
+#min_date {
+	float: left;
+	width:200px;
+	vertical-align:center;
+}
+
+#max_date {
+	float: left;
+	width:200px;
+	text-align: right;
+	vertical-align:center;
+}
+
+.arrow {
+	float: left;
+	text-align: center;
+	width:100px;
+}
+
+#unit_date {
+	float: left;
+	width: 420px;
+	text-align: center;
+	vertical-align:center;
 }
 
 #footer {
@@ -138,10 +199,22 @@ h2 {
 }
 
 .infobubble {
+	font-family: 'Questrial', sans-serif;
+	color: white;
+	text-align: center;
+}
+
+
+.bubble {
 	background-color: black;
-	
+	width: 250px;	
+	height: 250px;
+	padding-left: 50px;
+	padding-top: 50px;
 	
 }
+
+
 
 .message {
 	color:#444;
@@ -171,4 +244,15 @@ h2 {
   clear: both;
   height: 0;
   overflow: hidden;
+}
+
+.highlightit:hover img{
+	border: 5px solid #b93c53;
+}
+.highlightit:active img{
+	border: 5px solid #b93c53;
+}
+
+.highlightit:hover{
+	color: red; /* Dummy definition to overcome IE bug */
 }

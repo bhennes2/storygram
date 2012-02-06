@@ -1,0 +1,60 @@
+<h1>New tag</h1>
+
+<%= form_for(@tag) do |f| %>
+  <% if @tag.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@tag.errors.count, "error") %> prohibited this tag from being saved:</h2>
+
+      <ul>
+      <% @tag.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <% time = Time.now.asctime 
+     location = "holder"
+	%>
+
+  <div class="field">
+    <%= f.label :time %><br />
+    <%= f.text_field :time, :value=> time %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :notes %><br />
+    <%= f.text_field :notes %>
+  </div>
+  <div class="field">
+    <%= f.label :location %><br />
+    <%= f.text_field :location %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %><br />
+    <%= f.select :user_id, [[User.find(1).username,User.find(1).username],[User.find(2).username,User.find(2).username]] %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', tags_path %>
+
+<script>  
+		
+	function showMap(position) {
+      // Show a map centered at (position.coords.latitude, position.coords.longitude).
+	  document.forms["new_tag"]["tag_location"].value = "("+position.coords.latitude+", "+position.coords.longitude+")";
+	  
+    }
+	
+    // One-shot position request.
+    navigator.geolocation.getCurrentPosition(showMap);
+				
+</script>
+
+

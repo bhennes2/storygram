@@ -1,5 +1,7 @@
 class HomeController < ApplicationController
   require "instagram"
+  
+  
 
   if Rails.env.development?
     CALLBACK_URL = "http://localhost:3000/login"
@@ -29,10 +31,12 @@ class HomeController < ApplicationController
 		@media = client.media_popular
 		#render :json => all_media
 		
-	         ugly_start_date = nil
+		# determine middle date of media data time events		
+	  ugly_start_date = nil
     ugly_end_date = nil
   
-  @media.each do |media|
+    # loop to determine start and end dates for media object  
+    @media.each do |media|
       if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
         ugly_start_date = media.created_time
       end
@@ -41,9 +45,29 @@ class HomeController < ApplicationController
       end
     end
 
-     @start_date =Integer(ugly_start_date)
-     @end_date = Integer(ugly_end_date)
-     @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2	
+        if ugly_start_date.nil?
+          ugly_start_date = 0
+        end
+        if ugly_end_date.nil?
+          ugly_end_date = 0
+        end
+
+    @start_date =Integer(ugly_start_date)
+    @end_date = Integer(ugly_end_date)
+    @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2	
+	
+	diff = Integer(ugly_end_date) - Integer(ugly_start_date)
+	if diff >= 30
+		@time_unit
+	end
+	if diff < 30 && diff >= 7
+		@time_unit
+	end
+	if diff < 7
+		@time_unit
+	end
+	
+		
  
   end
 
@@ -52,10 +76,12 @@ class HomeController < ApplicationController
 		@media = client.media_popular
 		#render :json => all_media
 		
-			         ugly_start_date = nil
+		# determine middle date of media data time event
+		ugly_start_date = nil
     ugly_end_date = nil
-  
-  @media.each do |media|
+    
+    # loop to determine start and end dates for media object
+    @media.each do |media|
       if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
         ugly_start_date = media.created_time
       end
@@ -64,9 +90,16 @@ class HomeController < ApplicationController
       end
     end
 
-     @start_date =Integer(ugly_start_date)
-     @end_date = Integer(ugly_end_date)
-     @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2
+        if ugly_start_date.nil?
+          ugly_start_date = 0
+        end
+        if ugly_end_date.nil?
+          ugly_end_date = 0
+        end
+
+    @start_date =Integer(ugly_start_date)
+    @end_date = Integer(ugly_end_date)
+    @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2
   
   end
 
@@ -91,54 +124,77 @@ class HomeController < ApplicationController
         #TODO - if we aren't authorized to see this user (or bad parameter), need to handle this
       else
         @media = client.user_recent_media("self", {:count => 1000})
-      end
+        
+        
+     end
+	 
+	 ugly_start_date = nil
+        ugly_end_date = nil
+      
+        @media.each do |media|
+          if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
+            ugly_start_date = media.created_time
+          end
+          if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
+            ugly_end_date = media.created_time
+          end
+        end
+
+        if ugly_start_date.nil?
+          ugly_start_date = 0
+        end
+        if ugly_end_date.nil?
+          ugly_end_date = 0
+        end
+
+         @start_date =Integer(ugly_start_date)
+         @end_date = Integer(ugly_end_date)
+         @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2
 
     else
       redirect_to login_path
     end
     
-                   ugly_start_date = nil
-    ugly_end_date = nil
-  
-  @media.each do |media|
-      if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
-        ugly_start_date = media.created_time
-      end
-      if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
-        ugly_end_date = media.created_time
-      end
-    end
-
-     @start_date =Integer(ugly_start_date)
-     @end_date = Integer(ugly_end_date)
-     @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2
+    
      
   end
 
   def search
-    q = params[:q]
-    client = Instagram.client
-    @searchparam = q
-    @users = client.user_search(q)
+
+    
+ 
   end
 
   def search_tags
-    q = params[:q]
+	    q = params[:q]
     client = Instagram.client
     @searchparam = q
-    /@media = client.tag_recent_media(q)/
-    @media = client.media_popular
-	
-				         ugly_start_date = nil
+    result = client.tag_recent_media(q)
+    @media = nil
+    if !result.nil?
+	    @media = result.data
+    end
+
+	ugly_start_date = nil
     ugly_end_date = nil
-  
-  @media.each do |media|
+
+    if !@media.nil?
+      @media.each do |media|
+
       if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
-        ugly_start_date = media.created_time
+          ugly_start_date = media.created_time
+        end
+        if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
+          ugly_end_date = media.created_time
+        end
       end
-      if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
-        ugly_end_date = media.created_time
-      end
+    end
+    
+    if ugly_start_date.nil?
+      ugly_start_date = 0
+    end
+    if ugly_end_date.nil?
+      ugly_end_date = 0
     end
 
      @start_date =Integer(ugly_start_date)

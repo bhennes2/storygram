@@ -93,6 +93,15 @@
 .timeline-event-icon, .timeline-event-label,.timeline-event-tape{
         position:absolute;
         cursor:pointer;
+		
+	
+}
+
+.timeline-event-icon img{
+		height: 30px;
+		width: 30px;
+						
+
 }
 
 .timeline-event-tape,
@@ -141,6 +150,10 @@
 }
 
 .timeline-event-bubble-body {
+	font-family: 'Questrial', sans-serif;
+	color: white;
+	text-align: center;
+
 }
 
 .timeline-event-bubble-wiki {
@@ -160,7 +173,9 @@
     float: right;
     padding-left: 5px;
     padding-bottom: 5px;
-}.timeline-container {
+}
+
+.timeline-container {
     position: relative;
     overflow: hidden;
 }

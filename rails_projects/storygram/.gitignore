@@ -1,6 +1,1 @@
-.bundle
-db/*.sqlite3
-log/*.log
-tmp/
-.idea
-.idea/*
+.svn

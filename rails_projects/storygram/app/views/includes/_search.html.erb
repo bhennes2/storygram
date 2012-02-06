@@ -1,12 +1,76 @@
-User results for <b><%= @searchparam %></b>
+<%	q = params[:q] 
+	@type = params[:type]
+    client = Instagram.client
+    @searchparam = q
+		
+	if @type == "user"
+    	@users = client.user_search(q) %>
+		<script> document.getElementById("searchbar_notes").innerHTML ="Displaying <b><%= @users.count %></b> users for <b><%= q %></b>"; </script>
+	<% end
+	if @type == "tag"
+		
+		result = client.tag_recent_media(q)
+    	@media = nil
+    	if !result.nil?
+		    @media = result.data
+	    end
+		ugly_start_date = nil
+    	ugly_end_date = nil
 
+		if !@media.nil?
+			@media.each do |media|
+
+				if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
+  					ugly_start_date = media.created_time
+				end
+				if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
+  					ugly_end_date = media.created_time
+				end	
+			end
+		end
+		
+		if ugly_start_date.nil?
+			ugly_start_date = 0
+		end
+		if ugly_end_date.nil?
+			ugly_end_date = 0
+		end		
+
+	    @start_date =Integer(ugly_start_date)
+	    @end_date = Integer(ugly_end_date)
+	    @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2%>
+		
+		<script> document.getElementById("searchbar_notes").innerHTML ="Displaying <%= @media.count %> results for <b><%= @searchparam %></b>";</script>
+	<% end %>
 <ul>
-  <% @users.each do |user| %>
-    <li>
-        <%= image_tag user.profile_picture %>
-        <p> <%= link_to user.username, user_path(user.id) %> </p>
-    </li>
-  <% end %>
+ 	<% if @type == "user"  %>
+  		<% @users.each do |user| %>
+    	<li>
+    	    <img src="<%= user.profile_picture %>" height="120" width="120" />
+    	    <p> <%= link_to user.username, user_path(user.id) %> </p>
+    	</li>
+ 		<% end %> 
+		<!--Load generic map and timeline-->
+		<script>
+		
+		var map = new google.maps.Map(document.getElementById('map'), {
+    	    	zoom: 1,
+	        	enter: new google.maps.LatLng(0,0),
+	            mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+		
+		</script>
+		
+		
+ 	<% end %>
+ 	<% if @type == "tag"  %>
+  		<% @media.each do |media| %>
+    		<li>
+    		    <a href="#" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this)" /></a>
+    		</li>
+  		<% end  %>
+		
+		
+		
+  	<% end %>
 </ul>
-
-	

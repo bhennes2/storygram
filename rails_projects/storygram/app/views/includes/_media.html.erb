@@ -1,168 +1,393 @@
 <script type="text/javascript">
-var tl;
+	//Initialize global variables
+	var tl;
+	var marker;
+	var infoBubble = new Array();
+	var point;
+	var infoBubble_flag = { };
+	var map;
 
-// This is the function that loads the page
-function onLoad() {
-
-
-	  // make a custom map style
-    var styledMapType = new google.maps.StyledMapType([
-        {
-            featureType: "water",
-            elementType: "all",
-            stylers: [
-              { saturation: 0 },
-              { lightness: 100 }
-            ]
-        },
-        {
-            featureType: "all",
-            elementType: "all",
-            stylers: [
-              { saturation: -100 }
-            ]
-        }
-    ], {
-        name: "white"
-    });
-	
-	tm = TimeMap.init({
-        mapId: "map",               // Id of map div element (required)
-        timelineId: "timeline",     // Id of timeline div element (required)
-        
-        datasets: [
-            {
-                data: {
-				type: "basic",
-                value: [
-                        <% @media.each do |media| %>
-			{
-       			"start":"<%= Time.at(Integer(media.created_time)).iso8601 %>",
-				"point": {				
-						<% if media.location !=nil && media.location.latitude !=nil && media.location.longitude !=nil && media.caption != nil %>
-							"lat": <%= media.location.latitude %>,
-							"lon": <%= media.location.longitude %>
-						<% end %>
-				},
-       			//TODO - Title might be on multiple lines!! This breaks the javascript object because the quotation mark isn't closed. I think we need to "fix" these in the controller before it gets this far
-       			<% if media.caption !=nil %>
-       				"title": "<%= media.caption.text.gsub(/\n/," ")%>",
-            		"description":"<%= media.caption.text.gsub(/\n/," ") %>",
-          		<% else %>
-            		"title": "",
-            		"description":"",
-          		<% end %>
-		  		"image" :"<%= media.images.thumbnail.url %>",
-		  		"icon" :"<%= media.images.thumbnail.url %>",
-		  		"link" :"<%= media.link %>",
-				"options" : {
-                            // set the full HTML for the info window
-                            "infoHtml": "<img src= <%= media.images.thumbnail.url %> />"
-                          },
-       			'durationEvent':false // Notes: not "false". And no trailing comma.
-     		}<% if media != @media.last %>,<%end%>
-    		<% end %>
-			                  
-                    ]
-                }
-            }
-        ],
-        bandIntervals: [
-            Timeline.DateTime.DAY, 
-            Timeline.DateTime.MONTH
-        ]
-    });	
-
-	// set the map to our custom style
-    var gmap = tm.getNativeMap();
-    gmap.mapTypes.set("white", styledMapType);
-    gmap.setMapTypeId("white");
-};
-
-
-
-	/* Creating a timeline data object
+	//Creating a timeline data object
 	var timeline_data = {
   		'wiki-url':"http://simile.mit.edu/shelf/",
   		'wiki-section':"Simile JFK Timeline",
   		'dateTimeFormat': 'iso8601',
 		//loading the 'events' array
   		'events': [
-
+        <% if !@media.nil? %>
 			<% @media.each do |media| %>
 			{
-       			'start':"<%= Time.at(Integer(media.created_time)).iso8601 %>",
-       			//TODO - Title might be on multiple lines!! This breaks the javascript object because the quotation mark isn't closed. I think we need to "fix" these in the controller before it gets this far
+       			"start": "<%= Time.at(Integer(media.created_time)).iso8601 %>",
        			<% if media.caption != nil %>
-            		"title": "<%= media.caption.text %>",
-            		"description":"<%= media.caption.text %>",
+            		"title": "<%= truncate(media.caption.text.gsub(/\n/," "), :length => 30)%>",
+            		"description":"<%= truncate(media.caption.text.gsub(/\n/," "), :lenght => 30) %>>",
           		<% else %>
             		"title": "",
             		"description":"",
           		<% end %>
-		  		"image" :"<%= media.images.thumbnail.url %>",
-		  		//"icon" :"<%= media.images.thumbnail.url %> width='15' height='15'",
+		  		"image" :"<%= media.images.low_resolution.url %>",
+		  		"icon" :"<%= media.images.low_resolution.url %>",
 		  		"link" :"<%= media.link %>",
-       			'durationEvent':false // Notes: not "false". And no trailing comma.
+				<% if media.location != nil && media.location.latitude != nil && media.location.longitude != nil %>
+					"lat" : "<%= media.location.latitude %>",
+					"lng" : "<%= media.location.longitude %>",
+				<% else %>
+					"lat": "0",
+					"lng": "0",
+				<% end %>
+				"id" : "<%= media.id %>",
+				'durationEvent':false // Notes: not "false". And no trailing comma.
      		}<% if media != @media.last %>,<%end%>
     		<% end %>
-  		]};
+    	<% end %>
+  	]};
 
-	  var eventSource = new Timeline.DefaultEventSource();
 
-	  var theme1 = Timeline.ClassicTheme.create();
-	  theme1.timeline_start = "<%= Time.at(@start_date).iso8601 %>";
-	  theme1.timeline_stop = "<%= Time.at(@end_date).iso8601 %>";
-	  theme1.autoWidth = true;
 
-	  var bandInfos = [
+
+
+var resizeTimerID = null;
+function onResize() {
+    if (resizeTimerID == null) {
+        resizeTimerID = window.setTimeout(function() {
+            resizeTimerID = null;
+            tl.layout();
+        }, 500);
+    }
+}
+
+function load_event(img, tl){
+		
+		var i;
+		for (i=0; i <= timeline_data.events.length; i++)
+		{				
+			if ( timeline_data.events[i].image == img.src)
+			{ 
+				break;
+			}
+		}
+				
+		if ( timeline_data.events[i].lat !=0 && timeline_data.events[i].lng != 0)
+		{
+			var pt = new google.maps.LatLng(timeline_data.events[i].lat, timeline_data.events[i].lng);
+			var arrowStyle = 2;
+			var mkr = new google.maps.Marker({
+							map: map,
+          					position: pt
+		});
+		}
+		else
+		{
+			var pt = new google.maps.LatLng(0,0);
+			var arrowStyle = 3;
+		}
+
+		
+		
+		var content = '<div class="infobubble"><img id="map_image" src="' + img.src + '" width="300" height="300" onclick="close" /><p>' + timeline_data.events[i].title + '</p></div>';
+		
+		infoBubble = new InfoBubble({
+			map: map,
+			content: content,
+			position: pt,
+			shadowStyle: 3,
+			padding: 10,
+			backgroundColor: 'rgb(57,57,57)',
+			borderRadius: 4,
+			arrowSize: 10,
+			borderWidth: 1,
+			borderColor: '#2c2c2c',
+			disableAutoPan: true,
+			hideCloseButton: false,
+			arrowPosition: 30,
+			backgroundClassName: 'phoney',
+			arrowStyle: arrowStyle
+		});	
+		
+		if ( arrowStyle == 2 ) {
+        	infoBubble.open(map, mkr);
+		}
+		else {
+			infoBubble.open();
+		}
+		var ctr = new google.maps.LatLng((pt.lat()+25),(pt.lng()+15));
+		
+		map.setCenter(ctr);
+		map.setZoom(3);
+		
+		if ( !is_empty(infoBubble_flag) )
+		{
+			infoBubble_flag.close();
+			infoBubble_flag = {};
+		}
+		
+		/*Set flag to infoBubble for new image displayed*/
+		infoBubble_flag = infoBubble;
+				
+		/*Listen for user click on map to close any open info bubbles
+        google.maps.event.addListener(map, 'center_changed', function () { 
+			//document.write("hello");
+			infoBubble.close(map, mkr);
+        });*/
+		
+		//var shift = tl.getBand(0).getEther.dateToPixelOffset(timeline_data.events[i].start);
+		//tl.getBand(0)._moveEther(10);
+		
+		//document.write(shift);
+		
+};
+
+function is_empty(obj) {
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length && obj.length > 0)    return false;
+
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key))    return false;
+    }
+
+    return true;
+};
+
+
+
+
+</script>
+
+<ul>
+    <% if @media %>
+		
+	<% @media.each do |media| %>
+		<li>
+			<!-- <a href="<%= media.images.standard_resolution.url %>" rel="lightbox" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" rev="targetdiv:loadarea2,trigger:click,preload:none,fx:fade"> -->
+			
+				<a href="#" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this, tl)" onmouseover="load_event(this, tl)" /></a>
+		</li>
+		
+	<% end %>
+
+    <% end %>
+</ul>
+<script>
+// This is the function that loads the page
+function onLoad() {
+
+	var eventSource = new Timeline.DefaultEventSource();
+	  
+	var theme1 = Timeline.ClassicTheme.create();
+	
+	<% if @type != "user" %>
+		theme1.timeline_start = new Date(Date.UTC(<%= Time.at(@start_date).year %>,<%= Time.at(@start_date).month - 1 %>,<%= Time.at(@start_date).day - 10 %>));
+		theme1.timeline_stop = new Date(Date.UTC(<%= Time.at(@end_date).year %>,<%= Time.at(@end_date).month - 1 %>,<%= Time.at(@end_date).day + 10 %>));
+	<% end %>
+	  
+	theme1.autoWidth = false;
+		
+	theme1.event.instant.icon = "no-image-40.png";
+
+	theme1.event.instant.iconWidth = 15;
+	theme1.event.instant.incoHeight = 15;
+	  
+	  
+	var bandInfos = [
 	  	Timeline.createBandInfo({
-	        timeZone:       -5,
+	    	timeZone:       -5,
 			trackHeight:    1.0,
 	        trackGap:       0.2,
 	        eventSource:    eventSource,
-	        date:           "<%= Time.at(@middle_date).iso8601 %>",
-	        width:          "70%",
+			<% if @type != "user" %>
+	        date:           "<%= Time.at(@start_date).iso8601 %>",
+			<% end %>
+	        width:          "100%",
 	        intervalUnit:   Timeline.DateTime.DAY,
-	        intervalPixels: 100
-	    }),
+	        intervalPixels: 100,
+	        theme: theme1,
+	        zoomIndex: 6,
+                zoomSteps: new Array(
+					{pixelsPerInterval: 40, unit: Timeline.DateTime.SECOND},                	
+					{pixelsPerInterval: 40, unit: Timeline.DateTime.MINUTE},
+                	{pixelsPerInterval: 20, unit: Timeline.DateTime.MINUTE},
+                	{pixelsPerInterval: 60, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 40, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 20, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 100, unit: Timeline.DateTime.DAY}    // default display
+					
+	          	),      
+              
+            eventPainter:   Timeline.CompactEventPainter,
+
+			eventPainterParams: {
+				iconLabelGap:     5,
+				labelRightMargin: 5,
+				iconWidth:        10, // These are for per-event custom icons
+				iconHeight:       10,
+
+				stackConcurrentPreciseInstantEvents: {
+					limit: 5,
+					moreMessageTemplate:    "%0 More Events",
+					icon:                   "no-image-80.png", // default icon in stacks
+					iconWidth:              10,
+					iconHeight:             10
+				}
+            }
+	    })
+		/*,
 	    Timeline.createBandInfo({
 			showEventText:  false,
 	        trackHeight:    0.5,
 	        trackGap:       0.2,
 	        eventSource:    eventSource,
-	        date:           "<%= Time.at(@middle_date).iso8601 %>",
-	        width:          "30%",
+	        date:           "",*/
+	       /* width:          "30%",
 	        intervalUnit:   Timeline.DateTime.MONTH,
 	        intervalPixels: 100,
 	        theme:          theme1
-	    })
+	    })*/
 	  ];
-	  bandInfos[1].syncWith = 0;
-	  bandInfos[1].highlight = true;
-	  bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
-
-
+	  //document.getElementById("dates").innerHTML = bandInfos[0].intervalUnit;
+	  //document.write(bandInfos[0]);
+	  //bandInfos[1].syncWith = 0;
+	  //bandInfos[1].highlight = true;
+	  //bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 
 	  var url = "http://localhost:3000";
-
 	  tl = Timeline.create(document.getElementById("timeline"), bandInfos);
-
 	  eventSource.loadJSON(timeline_data, url);
-	
-	
-//Google Maps
-	  if (GBrowserIsCompatible()) {
-			var map = new GMap2(document.getElementById('map'));
-			map.enableScrollWheelZoom();
-			map.addControl(new GLargeMapControl());
+	  
+		
+	//Google Maps
+	if (GBrowserIsCompatible()) {
+	  
+	  
+		//function init() {
+			
+			map = new google.maps.Map(document.getElementById('map'), {
+    	    	zoom: 1,
+	        	enter: new google.maps.LatLng(0,0),
+	            mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+		
+	  		
+			var counter = 0;
+			var infoBubble = new Array();
+			//var point = new Array();
+			var content;
+		
+			//var marker = new Array();
+		
+		
+			//map.enableScrollWheelZoom();
+			//map.addControl(new GLargeMapControl());
 
+	        <% if !@media.nil? %>
+				<% @media.each do |media| %>
 
+					<% if media.location != nil && media.location.latitude != nil && media.location.longitude != nil && media.caption != nil %>
+						point = new google.maps.LatLng(<%= media.location.latitude %>, <%= media.location.longitude %>);
+						//point[counter] = new google.maps.LatLng(<%= media.location.latitude %>, <%= media.location.longitude %>);
+						content = { title: "<%= truncate(media.caption.text.gsub(/\n/," "), :length => 30)%>"};
+						marker = new google.maps.Marker({
+							map: map,
+          					position: point,
+							zIndex: counter 
+						});
+					
+					var content = '<div class="infobubble"><img src="<%= media.images.thumbnail.url %>" width="300" height="300" onclick="close" /><p>' + timeline_data.events[counter].title + '</p></div>';
+									
+					infoBubble[marker.zIndex] = new InfoBubble({
+          					map: map,
+          					content: content,
+          					position: point,
+					        shadowStyle: 1,
+          					padding: 10,
+          					backgroundColor: 'rgb(57,57,57)',
+			                borderRadius: 4,
+          					arrowSize: 10,
+          					borderWidth: 1,
+					        borderColor: '#2c2c2c',
+          					disableAutoPan: true,
+          					hideCloseButton: false,
+          					arrowPosition: 30,
+          					backgroundClassName: 'phoney',
+          					arrowStyle: 2
+        			});	
+					
+					google.maps.event.addListener(marker, 'mouseover', function() {
+						 infoBubble[this.zIndex].open(map, this);
+						 var ctr = new google.maps.LatLng((this.position.lat()+25),(this.position.lng()+15));
+		
+				         map.setCenter(ctr);
+						 map.setZoom(3);
+						 
+						if ( !is_empty(infoBubble_flag) )
+						{
+							infoBubble_flag.close();
+						}			
+						
+						/*Set flag to infoBubble for new image displayed*/
+						infoBubble_flag = infoBubble[this.zIndex];
+						
+						 
+        			});	
+									
+					google.maps.event.addListener(marker, 'click', function() {
+          				 infoBubble[this.zIndex].close();
+          			});
+					counter++;
+					
+				<%end%>
+
+			<% end %>
+			
+        <% end %>
+		/*
 			var counter = 0;
 			var point = new Array();
 			var markerOptions;
-			var marker = new Array();
-
+			var marker = new google.maps.Marker({
+          map: map,
+          position: new google.maps.LatLng(-35, 151),
+          draggable: true
+        });
+			
+		    var contentString = 'hello';
+      
+        infoBubble = new InfoBubble({
+          map: map,
+          content: 'Some label',
+          position: new google.maps.LatLng(-35, 151),
+          //shadowStyle: 1,
+          //padding: 0,
+          backgroundColor: 'rgb(57,57,57)',
+          borderRadius: 4,
+          arrowSize: 10,
+          borderWidth: 1,
+          borderColor: '#2c2c2c',
+          disableAutoPan: true,
+          hideCloseButton: true,
+          arrowPosition: 30,
+          backgroundClassName: 'phoney',
+          arrowStyle: 2
+        });
+  
+        google.maps.event.addListener(marker, 'mouseover', function() {
+          if (!infoBubble.isOpen()) {
+            infoBubble.open(map, marker);
+          }
+          });
+ */
+        };
+ 
+     
+      	 	
+		
+		
+			
+			/*
+			
+			
+        <% if !@media.nil? %>
 			<% @media.each do |media| %>
 
 				<% if media.location != nil && media.location.latitude != nil && media.location.longitude != nil && media.caption != nil %>
@@ -188,7 +413,8 @@ function onLoad() {
 				<%end%>
 
 			<% end %>
-
+			
+        <% end %>
 	        if (point != null && point.length > 0) {
 	            map.setCenter(point[counter - 1], 11);
 	        } else {
@@ -198,35 +424,13 @@ function onLoad() {
 			// This is a line connecting the points
 			  //var polyline = new GPolyline(point, "#ff0000", 5);
 			  //map.addOverlay(polyline);
-			}
+		*/
+		//google.maps.event.addDomListener(window, 'load', init());		
+		//}
+		
+		
+		return tl;
 
 }
-
-var resizeTimerID = null;
-function onResize() {
-    if (resizeTimerID == null) {
-        resizeTimerID = window.setTimeout(function() {
-            resizeTimerID = null;
-            tl.layout();
-        }, 500);
-    }
-}
-*/
 </script>
 
-<!--
-This displays the variable values for debugging purposes
-Start:  <%=Time.at(@start_date)%>
-End:  <%=Time.at(@end_date)%>
-Middle:  <%= Time.at(@middle_date) %>
--->
-
-<ul>
-	<% @media.each do |media| %>
-		<li>
-			<a href="<%= media.images.standard_resolution.url %>" rel="lightbox" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" rev="targetdiv:loadarea2,trigger:click,preload:none,fx:fade">
-				<img src="<%= media.images.thumbnail.url %>" width="120" height="120" onclick="close" />
-			</a>
-		</li>
-	<% end %>
-</ul>

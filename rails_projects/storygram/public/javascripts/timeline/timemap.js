@@ -163,9 +163,14 @@ TimeMap = function(tElement, mElement, options) {
     // allow theme options to be specified in options
     options.theme = TimeMapTheme.create(options.theme, options);
     
+    
+    
     // initialize map
     tm.initMap();
+    
+    
 };
+
 
 // STATIC FIELDS
 
@@ -264,22 +269,39 @@ TimeMap.init = function(config) {
         // allow intervals to be specified by key
         intervals = util.lookup(config.bandIntervals, TimeMap.intervals);
         // make default band info
+        
         config.bandInfo = [
             {
-                width:          "80%", 
+            	// need to play around with zoomIndex and zoomSteps to determine zooming behavior and make fluid
+                width:          "100%", 
                 intervalUnit:   intervals[0], 
-                intervalPixels: 70
-            },
+                intervalPixels: 100,
+                
+                date:           "<%= Time.at(@middle_date).iso8601 %>",
+                zoomIndex: 6,
+                zoomSteps: new Array(
+					{pixelsPerInterval: 40, unit: Timeline.DateTime.SECOND},                	
+					{pixelsPerInterval: 40, unit: Timeline.DateTime.MINUTE},
+                	{pixelsPerInterval: 20, unit: Timeline.DateTime.MINUTE},
+                	{pixelsPerInterval: 60, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 40, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 20, unit: Timeline.DateTime.HOUR},
+                	{pixelsPerInterval: 100, unit: intervals[0]}    // default display
+                )
+            }/*,
             {
-                width:          "20%", 
+                width:          "30%", 
                 intervalUnit:   intervals[1], 
                 intervalPixels: 100,
+                
+                date:           "<%= Time.at(@middle_date).iso8601 %>",
                 showEventText:  false,
                 overview:       true,
                 trackHeight:    0.4,
                 trackGap:       0.2
-            }
+            }*/
         ];
+        
     }
     
     // create the TimeMap object
@@ -333,9 +355,14 @@ TimeMap.init = function(config) {
                 bandInfo.eventSource = null;
             }
             bands[x] = Timeline.createBandInfo(bandInfo);
+            
+            //bands[x].eventPainter.layout(bands[0].eventPainter.layout());
+            
             if (x > 0 && util.TimelineVersion() == "1.2") {
                 // set all to the same layout
                 bands[x].eventPainter.setLayout(bands[0].eventPainter.getLayout()); 
+              
+                
             }
         });
     }
@@ -440,6 +467,7 @@ TimeMap.prototype = {
                 bands[x].syncWith = 0;
             }
             bands[x].highlight = true;
+            
         }
         
         /** 
@@ -1391,6 +1419,8 @@ TimeMapDataset = function(timemap, options) {
     options.dateParser = util.lookup(options.dateParser, TimeMap.dateParsers);
     // allow theme options to be specified in options
     options.theme = TimeMapTheme.create(options.theme, options);
+    
+    
 };
 
 TimeMapDataset.prototype = {
@@ -1561,7 +1591,8 @@ TimeMapTheme = function(options) {
         /** Icon anchor for marker placemarks 
          * @name TimeMapTheme#iconAnchor 
          * @type Number[] */
-        iconAnchor: [16, 33]
+        iconAnchor: [16, 33],
+        
     };
     
     // merge defaults with options
@@ -2234,10 +2265,14 @@ TimeMapItem.prototype = {
  * Standard open info window function, using static text in map window
  */
 TimeMapItem.openInfoWindowBasic = function() {
+	
     var item = this,
         html = item.getInfoHtml(),
         ds = item.dataset,
         placemark = item.placemark;
+        
+              
+        
     // scroll timeline if necessary
     if (!item.onVisibleTimeline()) {
         ds.timemap.scrollToDate(item.getStart());
@@ -2246,6 +2281,8 @@ TimeMapItem.openInfoWindowBasic = function() {
     if (item.getType() == "marker" && placemark.api) {
         placemark.setInfoBubble(html);
         placemark.openBubble();
+        
+                
         // deselect when window is closed
         item.closeHandler = placemark.closeInfoBubble.addHandler(function() { 
             // deselect
@@ -2256,7 +2293,9 @@ TimeMapItem.openInfoWindowBasic = function() {
     } else {
         item.map.openBubble(item.getInfoPoint(), html);
         item.map.tmBubbleItem = item;
+        
     }
+    
 };
 
 /**
@@ -2269,7 +2308,9 @@ TimeMapItem.openInfoWindowAjax = function() {
                 item.opts.infoHtml = result;
                 item.openInfoWindow();
         });
+        
         return;
+        
     }
     // fall back on basic function if content is loaded or URL is missing
     item.openInfoWindow = function() {
@@ -2277,6 +2318,7 @@ TimeMapItem.openInfoWindowAjax = function() {
         item.dataset.timemap.setSelected(item);
     };
     item.openInfoWindow();
+    
 };
 
 /**
@@ -2824,3 +2866,57 @@ window.TimeMapTheme = TimeMapTheme;
 window.TimeMapItem = TimeMapItem;
 
 })();
+/*
+var map, infoBubble;
+      function init() {
+        //var mapCenter = new google.maps.LatLng(0,0);
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 1,
+          center: new google.maps.LatLng(0,0),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+ 
+        var marker = new google.maps.Marker({
+          map: map,
+          position: new google.maps.LatLng(-35, 151),
+          draggable: true
+        });
+ 
+        var contentString = 'hello';
+      
+        infoBubble = new InfoBubble({
+          map: map,
+          content: 'Some label',
+          position: new google.maps.LatLng(-35, 151),
+          shadowStyle: 1,
+          padding: 0,
+          backgroundColor: 'rgb(57,57,57)',
+          borderRadius: 4,
+          arrowSize: 10,
+          borderWidth: 1,
+          borderColor: '#2c2c2c',
+          disableAutoPan: true,
+          hideCloseButton: true,
+          arrowPosition: 30,
+          backgroundClassName: 'phoney',
+          arrowStyle: 2
+        });
+  
+        google.maps.event.addListener(marker, 'click', function() {
+          if (!infoBubble.isOpen()) {
+            infoBubble.open(map, marker);
+          }
+          });
+ 
+        
+ 
+     }
+      google.maps.event.addDomListener(window, 'load', init);    */
+     
+function centerSimileAjax(date) {
+    tl.getBand(0).setCenterVisibleDate(SimileAjax.DateTime.parseGregorianDateTime(date));
+}
+     
+function centerTimeline(year) {
+            this.getBand(0).setCenterVisibleDate(new Date(year, 0, 1));
+        }
