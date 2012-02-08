@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>TagLab</title>
-    <link href="/stylesheets/stylesheet.css" rel="stylesheet" type="text/css">
-	<script src="/javascripts/jquery-1.7.1.js"></script>
-  </head>
-  <body>
-  	<p>Welcome to TagLab</p>
+<!-- Load content into body of application.html.erb -->
+  	<p>Welcome to TagLab
+	<% if current_user %>
+		Welcome, <%= current_user.username %>!
+		<%= link_to "Sign Out", signout_path %>
+		<%= link_to 'Profile', users_path %>
+		<%= link_to 'Tags', tags_path %>
+		
+	<% else %>
+		<%= link_to "Sign in with Twitter", "/auth/twitter/" %>
+		<!--<%= link_to "Sign in with Facebook", "/auth/facebook/" %>-->
+		
+	<% end %></p>
 	<img src="/images/logo.jpg" alt="TagLab now!" />
 	<p><em>meep meep</em></p>
-	<%= link_to 'Profile', users_path %>
-	<%= link_to 'Tags', tags_path %>
 	
-	<%= link_to "Sign in with Twitter", "/auth/twitter/" %>
+
 	
-		
-  </body>
-</html>
+	
+
+

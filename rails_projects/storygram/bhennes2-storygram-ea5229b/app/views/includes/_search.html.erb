@@ -1,0 +1,25 @@
+Results for <b><%= @searchparam %></b>
+
+<ul>
+  <% @users.each do |user| %>
+    <li>
+        <%= image_tag user.profile_picture %>
+        <p> <%= link_to user.username, user_path(user.id) %> </p>
+    </li>
+  <% end %>
+</ul>
+
+<script>
+	function init() {
+		map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 1,
+          center: new google.maps.LatLng(0,0),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+		});	
+		
+		
+	}
+	google.maps.event.addDomListener(window, 'load', init);
+	
+	
+</script>

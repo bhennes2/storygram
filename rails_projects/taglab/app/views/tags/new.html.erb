@@ -1,5 +1,11 @@
 <h1>New tag</h1>
 
+<a onclick="update_fields('Breakfast')">Breakfast</a>
+<a onclick="update_fields('Lunch')">Lunch</a>
+<a onclick="update_fields('Dinner')">Dinner</a>
+<a onclick="update_fields('Bedtime')">Bedtime</a>
+<a onclick="update_fields('Wake Up')">Wake Up</a>
+
 <%= form_for(@tag) do |f| %>
   <% if @tag.errors.any? %>
     <div id="error_explanation">
@@ -18,24 +24,24 @@
 	%>
 
   <div class="field">
-    <%= f.label :time %><br />
-    <%= f.text_field :time, :value=> time %>
+    <%= f.label :time %>
+    <%= f.text_field :time, :value=> time %><br />
   </div>
   <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
+    <%= f.label :title %>
+    <%= f.text_field :title, :autocomplete=> :off %><br />
   </div>
   <div class="field">
-    <%= f.label :notes %><br />
-    <%= f.text_field :notes %>
+    <%= f.label :notes %>
+    <%= f.text_field :notes %><br />
   </div>
   <div class="field">
-    <%= f.label :location %><br />
-    <%= f.text_field :location %>
+    <%= f.label :location %>
+    <%= f.text_field :location %><br />
   </div>
   <div class="field">
-    <%= f.label :user_id %><br />
-    <%= f.select :user_id, [[User.find(1).username,User.find(1).username],[User.find(2).username,User.find(2).username]] %>
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id, :value=> current_user.uid %><br />
   </div>
   <div class="actions">
     <%= f.submit %>
@@ -45,15 +51,38 @@
 <%= link_to 'Back', tags_path %>
 
 <script>  
-		
+	
+	function update_fields(quick_tag) {
+		document.forms["new_tag"]["tag_title"].value = quick_tag;
+		document.forms["new_tag"].submit();
+	}
+
+
+	
 	function showMap(position) {
       // Show a map centered at (position.coords.latitude, position.coords.longitude).
 	  document.forms["new_tag"]["tag_location"].value = "("+position.coords.latitude+", "+position.coords.longitude+")";
 	  
     }
 	
-    // One-shot position request.
+	// One-shot position request.
     navigator.geolocation.getCurrentPosition(showMap);
+	
+	$(function() {
+		
+		
+		
+		var available_titles = [
+				<% Tag.all.each do |tag| %>
+						"<%= tag.title %>"
+					<% if tag != Tag.last %>,<%end%>
+				<% end %>
+		];
+		$("#tag_title").autocomplete({
+			source: available_titles
+		});
+			
+	});
 				
 </script>
 

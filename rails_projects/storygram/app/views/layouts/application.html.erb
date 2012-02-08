@@ -4,8 +4,9 @@
 <title>Storygram</title>
 <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'/>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
-<link rel="stylesheet" href="/stylesheets/lightbox.css" type="text/css" media="screen" />
+
 <link rel="stylesheet" href="/stylesheets/base.css" type="text/css" media="screen" />
+<link rel="shortcut icon" href="/images/favicon.ico" >
 
 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= @GOOGLE_API_KEY %>" type="text/javascript"></script>
 
@@ -22,10 +23,10 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script type="text/javascript" src="javascripts/timeline/jquery-1.6.2.min.js"></script> 
-<script type="text/javascript" src="javascripts/timeline/mxn.js?(google)"></script> 
-<script src="javascripts/timeline/timeline-2.3.0.js" type="text/javascript"></script>
-<script src="javascripts/timeline/timemap.js" type="text/javascript"></script>
+<script type="text/javascript" src="/javascripts/timeline/jquery-1.6.2.min.js"></script> 
+<script type="text/javascript" src="/javascripts/timeline/mxn.js?(google)"></script> 
+<script src="/javascripts/timeline/timeline-2.3.0.js" type="text/javascript"></script>
+<script src="/javascripts/timeline/timemap.js" type="text/javascript"></script>
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobubble/src/infobubble.js" type="text/javascript"></script>
 
 <!--<script type="text/javascript" src="/javascripts/thumbnailviewer2.js"></script>
@@ -49,18 +50,19 @@
 </script>
 </head>
 
+
 <body onload="onLoad();" onresize="onResize();" onunload="GUnload();">
 	<div id="wrapper">
 		<div id="header">
 			<div id="login">
-				<a href="http://instagram.com">SIGN IN WITH INSTAGRAM &#9660;</a>
+				<!--<a href="http://instagram.com">SIGN IN WITH INSTAGRAM &#9660;</a>-->
 			</div>
 			<div id="bar">
 				&nbsp;
 			</div>
 			<br class="clear"/>
 			<div id="logo">
-				<a href="popular.html"><img src="/images/logo.png"/></a>
+				<a href="<% root_url %>"><img src="/images/logo.png"/></a>
 			</div>
 			<div id="slogan">
 				<p>Setting the time and place for your story!</p>
@@ -78,18 +80,13 @@
 						<p>Search by:&nbsp;<%= radio_button_tag :type, "tag" %>
 						<%= label_tag(:type, "Tag") %>
 						&nbsp;<%= radio_button_tag :type, "user" %>
-						<%= label_tag(:type, "User") %></p>
+						<%= label_tag(:type, "User/Name") %></p>
 					<% end %>
 					<p>What's New: <%= link_to "MY FEED", self_path %> <%= link_to "POPULAR", popular_path %></p>
 					<div id="searchbar_notes">&nbsp;</div>
 				</div>
 				<div id="results" >
-					<%= if params[:q].blank?
-							render :partial => "/includes/media"
-						else
-							render :partial => "/includes/search" 
-						end
-					%>
+					<%= render :partial => "/includes/media" %>
 				</div>
 			</div>
 			<div id="map">
@@ -97,7 +94,7 @@
 			</div>
 			<div id=timeline-wrapper>
 				<div id="timeline">
-					<%= yield %>
+					&nbsp;
 				</div>
 				<br class="clear" />
 			</div>

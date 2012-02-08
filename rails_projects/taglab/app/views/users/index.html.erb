@@ -10,8 +10,8 @@
     <th>Age</th>
     <th>Sex</th>
     <th>Zip code</th>
-    <th></th>
-    <th></th>
+    <th>Uid</th>
+    <th>Provider</th>
     <th></th>
   </tr>
 
@@ -25,6 +25,8 @@
     <td><%= user.age %></td>
     <td><%= user.sex %></td>
     <td><%= user.zip_code %></td>
+	<td><%= user.uid %></td>
+	<td><%= user.provider %></td>
     <td><%= link_to 'Show', user %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
     <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>

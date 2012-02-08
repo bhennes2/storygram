@@ -29,7 +29,7 @@ class TagsController < ApplicationController
   def new
     @tag = Tag.new
 
-    respond_to do |format|
+	respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @tag }
     end
@@ -83,6 +83,10 @@ class TagsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  
+  
+  
   
   protected
   

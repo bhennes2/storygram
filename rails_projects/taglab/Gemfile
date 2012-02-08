@@ -42,4 +42,6 @@ gem 'sinatra', '1.0'
 #   gem 'webrat'
 # end
 
-gem 'omniauth'
+# Add authentication for Twitter and Facebook login
+gem 'omniauth-twitter'
+gem 'omniauth-facebook'

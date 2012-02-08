@@ -1,3 +1,7 @@
 class Tag < ActiveRecord::Base
-	validates :title, :presence => true 
+	
+	if true
+		validates :title, :presence => true 
+	end
+
 end

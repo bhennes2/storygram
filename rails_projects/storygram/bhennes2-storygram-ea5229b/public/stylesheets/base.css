@@ -1,0 +1,190 @@
+@charset "UTF-8";
+/* CSS Document /
+
+/ RESET */
+html,body,div,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,fieldset,input { margin: 0; padding: 0; }
+h1,h2,h3,h4,h5,h6,pre,code,address,caption,cite,code,em,strong,th { font-size: 1em; font-weight: normal; font-style: normal; }
+ul,ol { list-style: none; }
+fieldset,img { border: none; }
+caption,th { text-align: left; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+html {
+	height: 100%;
+	background-image: url('/images/soft_wallpaper.png'); 
+    background-repeat: repeat;
+}
+
+a {
+	cursor:pointer;
+	color:#CC3300;
+	text-decoration:none;
+}
+
+/*
+body { 
+  font-family:Arial;background-color:#FFF;margin:0px;padding:0px; }
+
+h1 {
+	font-size:18px;
+	padding:0;
+	color:#ebb93b;
+}
+
+h2 {
+	font-size:14px;
+	padding:0;
+	color:#ebb93b;
+	margin-bottom:0px;
+	margin-top:12px;
+}
+*/
+
+#wrapper {
+    width: 1020px;
+	margin: 0 auto;
+	font-family: 'Questrial', sans-serif;
+}
+
+#header {
+	width:1020px;
+	height:115px;
+	float: left;
+}
+
+#login {
+	width: 1020px;
+	margin-top: 10px;
+	font-size: 15px;
+	color: #b93c53;
+	text-align: right;
+	float:left;
+}
+
+#bar {
+	width: 1020px;
+	height: 11px;
+	background-color: #b93c53;
+	float:left;
+}
+
+#logo {
+	width: 1020px;
+	padding-top: 5px;
+	padding-left: 5px;
+	float: left;
+}
+
+#content {
+	width: 1020px;
+	float: left;
+}
+
+#search {
+	width: 300px;
+	height: 525px;
+	padding: 10px;
+	float: left;
+}
+
+#searchbar {
+	height: 135px;
+	float:left;
+}
+
+#results {
+	height: 390px;
+	float:left;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#results ul {
+	width:310px;
+}
+
+#results ul li {
+	width: 150px;
+	float: left;
+}
+
+#map {
+	width: 620px;
+	height: 525px;
+	border: 10px solid white;
+	margin-left: 20px;
+	float: left;
+}
+
+#timeline {
+	width:1020px;
+	height:175px;
+	margin-top:20px;
+	float:left;
+}
+#dates {
+	width:1020px;
+	float:left;
+}
+
+#footer {
+	width:1020px;
+	float: left;
+	margin-top: 35px;
+	background-color: #d3b0b7;
+	height: 35px;
+	padding-top: 20px;
+	color: white;
+	font-size: 10px;
+	text-align: center;
+	
+	
+}
+
+.infobubble {
+	font-family: 'Questrial', sans-serif;
+	color: white;
+	text-align: center;
+}
+
+
+.bubble {
+	background-color: black;
+	width: 250px;	
+	height: 250px;
+	padding-left: 50px;
+	padding-top: 50px;
+	
+}
+
+
+
+.message {
+	color:#444;
+	font-size:14px;
+	width:800px;
+	margin:24px auto 0 auto;
+}
+
+.controls { 
+  clear:both;
+  margin:0 32px 0 32px;
+}
+
+.controls table {
+	width:100%;
+	border-collapse:collapse;
+}
+
+.controls table td {
+	border:1px dotted #666;
+	background-color:#F3F3F3;color:#444;
+	padding:4px;
+	font-size:11px;
+}
+
+.clear {
+  clear: both;
+  height: 0;
+  overflow: hidden;
+}

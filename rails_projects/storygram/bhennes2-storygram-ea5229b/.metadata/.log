@@ -1,0 +1,109 @@
+!SESSION 2011-05-21 16:17:04.977 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86 -data C:\Users\bhennes2\rails_projects\instagram
+
+!ENTRY com.aptana.core 4 0 2011-05-21 16:17:52.522
+!MESSAGE Cannot run program "ruby" (in directory "C:\Users\bhennes2\rails_projects\instagram\app\controllers"): CreateProcess error=2, The system cannot find the file specified
+!STACK 0
+java.io.IOException: Cannot run program "ruby" (in directory "C:\Users\bhennes2\rails_projects\instagram\app\controllers"): CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at com.aptana.core.util.ProcessUtil.run(ProcessUtil.java:255)
+	at com.aptana.core.util.ProcessUtil.run(ProcessUtil.java:208)
+	at com.aptana.core.util.ProcessUtil.runInBackground(ProcessUtil.java:174)
+	at com.aptana.core.util.ProcessUtil.runInBackground(ProcessUtil.java:82)
+	at com.aptana.core.util.ProcessUtil.outputForCommand(ProcessUtil.java:39)
+	at com.aptana.editor.ruby.validator.RubyValidator.validate(RubyValidator.java:70)
+	at com.aptana.editor.common.validator.ValidationManager.validate(ValidationManager.java:119)
+	at com.aptana.editor.common.parsing.FileService.validate(FileService.java:159)
+	at com.aptana.editor.common.text.reconciler.CommonReconcilingStrategy.reconcile(CommonReconcilingStrategy.java:144)
+	at com.aptana.editor.common.text.reconciler.CommonReconcilingStrategy.initialReconcile(CommonReconcilingStrategy.java:77)
+	at com.aptana.editor.common.text.reconciler.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:123)
+	at com.aptana.editor.common.text.reconciler.CommonCompositeReconcilingStrategy.initialReconcile(CommonCompositeReconcilingStrategy.java:75)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at com.aptana.editor.common.text.reconciler.CommonReconciler.initialProcess(CommonReconciler.java:112)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+Caused by: java.io.IOException: CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 16 more
+
+!ENTRY com.aptana.core 4 0 2011-05-21 16:17:55.170
+!MESSAGE Cannot run program "ruby" (in directory "C:\Users\bhennes2\rails_projects\instagram\app\controllers"): CreateProcess error=2, The system cannot find the file specified
+!STACK 0
+java.io.IOException: Cannot run program "ruby" (in directory "C:\Users\bhennes2\rails_projects\instagram\app\controllers"): CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at com.aptana.core.util.ProcessUtil.run(ProcessUtil.java:255)
+	at com.aptana.core.util.ProcessUtil.run(ProcessUtil.java:208)
+	at com.aptana.core.util.ProcessUtil.runInBackground(ProcessUtil.java:174)
+	at com.aptana.core.util.ProcessUtil.runInBackground(ProcessUtil.java:82)
+	at com.aptana.core.util.ProcessUtil.outputForCommand(ProcessUtil.java:39)
+	at com.aptana.editor.ruby.validator.RubyValidator.validate(RubyValidator.java:70)
+	at com.aptana.editor.common.validator.ValidationManager.validate(ValidationManager.java:119)
+	at com.aptana.editor.common.parsing.FileService.validate(FileService.java:159)
+	at com.aptana.editor.common.text.reconciler.CommonReconcilingStrategy.reconcile(CommonReconcilingStrategy.java:144)
+	at com.aptana.editor.common.text.reconciler.CommonReconcilingStrategy.initialReconcile(CommonReconcilingStrategy.java:77)
+	at com.aptana.editor.common.text.reconciler.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:123)
+	at com.aptana.editor.common.text.reconciler.CommonCompositeReconcilingStrategy.initialReconcile(CommonCompositeReconcilingStrategy.java:75)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at com.aptana.editor.common.text.reconciler.CommonReconciler.initialProcess(CommonReconciler.java:112)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+Caused by: java.io.IOException: CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 16 more
+!SESSION 2011-07-19 21:58:42.527 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  C:\Users\bhennes2\rails_projects\instagram\public\javascripts\cubism.js
+Command-line arguments:  -os win32 -ws win32 -arch x86 C:\Users\bhennes2\rails_projects\instagram\public\javascripts\cubism.js
+
+!ENTRY org.eclipse.equinox.p2.updatechecker 4 0 2011-07-19 21:59:29.753
+!MESSAGE Exception in update check thread
+!STACK 0
+org.eclipse.swt.SWTException: Device is disposed
+	at org.eclipse.swt.SWT.error(SWT.java:4083)
+	at org.eclipse.swt.SWT.error(SWT.java:3998)
+	at org.eclipse.swt.SWT.error(SWT.java:3969)
+	at org.eclipse.swt.widgets.Display.error(Display.java:1249)
+	at org.eclipse.swt.widgets.Display.asyncExec(Display.java:700)
+	at org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdater.updatesAvailable(AutomaticUpdater.java:141)
+	at org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdater.updatesAvailable(AutomaticUpdater.java:91)
+	at org.eclipse.equinox.internal.p2.ui.sdk.scheduler.AutomaticUpdateScheduler$1.updatesAvailable(AutomaticUpdateScheduler.java:121)
+	at org.eclipse.equinox.internal.p2.updatechecker.UpdateChecker$UpdateCheckThread.run(UpdateChecker.java:77)
+!SESSION 2011-09-04 11:57:35.052 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.equinox.p2.touchpoint.natives 2 0 2011-09-04 12:03:10.166
+!MESSAGE Could not remove temporary backup directory (it is safe to manually delete it and its contents): C:\Users\bhennes2\AppData\Local\Temp\AptanaProfile_2646ac977d80_c0a80174c8f3
+!SESSION 2011-09-04 12:04:53.564 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 4 372 2011-09-04 12:09:22.525
+!MESSAGE Resource '/storygram' is not open.
+
+!ENTRY com.aptana.ruby.core 4 0 2011-09-04 12:09:24.420
+!MESSAGE Cannot run program "ruby": CreateProcess error=2, The system cannot find the file specified
+!SESSION 2011-09-04 12:24:45.872 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY com.aptana.ruby.core 4 0 2011-09-04 12:25:02.453
+!MESSAGE Cannot run program "ruby": CreateProcess error=2, The system cannot find the file specified

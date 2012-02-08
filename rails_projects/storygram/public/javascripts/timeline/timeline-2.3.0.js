@@ -358,7 +358,15 @@ Timeline._Band.prototype.getMaxVisibleDateAfterDelta=function(A){return this._et
 Timeline._Band.prototype.getCenterVisibleDate=function(){return this._ether.pixelOffsetToDate(this._viewLength/2)};
 Timeline._Band.prototype.setMinVisibleDate=function(A){if(!this._changing){this._moveEther(Math.round(-this._ether.dateToPixelOffset(A)))}};
 Timeline._Band.prototype.setMaxVisibleDate=function(A){if(!this._changing){this._moveEther(Math.round(this._viewLength-this._ether.dateToPixelOffset(A)))}};
-Timeline._Band.prototype.setCenterVisibleDate=function(A){if(!this._changing){this._moveEther(Math.round(this._viewLength/2-this._ether.dateToPixelOffset(A)))}};
+Timeline._Band.prototype.setCenterVisibleDate=function(A){
+	
+	if(!this._changing){
+		this._moveEther(Math.round(this._viewLength/2-this._ether.dateToPixelOffset(A)))
+	}
+	
+};
+
+
 Timeline._Band.prototype.dateToPixelOffset=function(A){return this._ether.dateToPixelOffset(A)-this._viewOffset};
 Timeline._Band.prototype.pixelOffsetToDate=function(A){return this._ether.pixelOffsetToDate(A+this._viewOffset)};
 Timeline._Band.prototype.createLayerDiv=function(C,A){var D=this._timeline.getDocument().createElement("div");D.className="timeline-band-layer"+(typeof A=="string"?(" "+A):"");D.style.zIndex=C;this._innerDiv.appendChild(D);var B=this._timeline.getDocument().createElement("div");B.className="timeline-band-layer-inner";if(SimileAjax.Platform.browser.isIE){B.style.cursor="move"}else{B.style.cursor="-moz-grab"}D.appendChild(B);return B};
@@ -1022,3 +1030,25 @@ function validate_input(){
 	
 };
 
+var resizeTimerID = null;
+function onResize() {
+    if (resizeTimerID == null) {
+        resizeTimerID = window.setTimeout(function() {
+            resizeTimerID = null;
+            tl.layout();
+        }, 500);
+    }
+}
+
+function is_empty(obj) {
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length && obj.length > 0)    return false;
+
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key))    return false;
+    }
+
+    return true;
+};

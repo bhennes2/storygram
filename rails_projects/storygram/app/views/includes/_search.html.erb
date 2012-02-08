@@ -50,17 +50,6 @@
     	    <p> <%= link_to user.username, user_path(user.id) %> </p>
     	</li>
  		<% end %> 
-		<!--Load generic map and timeline-->
-		<script>
-		
-		var map = new google.maps.Map(document.getElementById('map'), {
-    	    	zoom: 1,
-	        	enter: new google.maps.LatLng(0,0),
-	            mapTypeId: google.maps.MapTypeId.ROADMAP
-			});
-		
-		</script>
-		
 		
  	<% end %>
  	<% if @type == "tag"  %>

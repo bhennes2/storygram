@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120204203320) do
+ActiveRecord::Schema.define(:version => 20120204203322) do
 
   create_table "tags", :force => true do |t|
     t.string   "time"
@@ -34,6 +34,8 @@ ActiveRecord::Schema.define(:version => 20120204203320) do
     t.string   "zip_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uid"
+    t.string   "provider"
   end
 
 end

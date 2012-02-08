@@ -52,9 +52,22 @@ Quicktag::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-   root :to => "home#index"
+  root :to => "home#index"
   match '/users' => 'home#users', :as => :users
   match '/tags' => 'home#tags', :as => :tags	
+  
+  # Redirect for Provider (Twitter, Facebook, etc.) Oauth
+  match "/auth/:provider/callback" => "sessions#create"
+  
+  # Provide sign out for Oauth
+  match "/signout" => "sessions#destroy", :as => :signout
+  
+  # Resource for autocomplete
+  resources :tags do
+  	get :autocomplete_title, :on => :collection
+  end
+  
+  
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

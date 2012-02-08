@@ -144,12 +144,17 @@ h2 {
 	float: left;
 }
 
-#timeline {
+#timeline-wrapper {
 	width:1020px;
 	height:175px;
 	margin-top:20px;
+}
+
+
+#timeline {
+	width:1020px;
+	height:175px;
 	float:left;
-	
 }
 
 #dates {
@@ -162,6 +167,7 @@ h2 {
 	float: left;
 	width:200px;
 	vertical-align:center;
+	padding-top:15px;
 }
 
 #max_date {
@@ -169,6 +175,7 @@ h2 {
 	width:200px;
 	text-align: right;
 	vertical-align:center;
+	padding-top:15px;
 }
 
 .arrow {
@@ -182,6 +189,7 @@ h2 {
 	width: 420px;
 	text-align: center;
 	vertical-align:center;
+	padding-top:15px;
 }
 
 #footer {

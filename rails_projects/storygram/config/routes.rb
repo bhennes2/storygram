@@ -62,6 +62,8 @@ Instagram::Application.routes.draw do
   match '/user' => 'home#user', :as => :self
   match '/search' => 'home#search', :as => :search
   match '/search_tags' => 'home#search_tags', :as => :search_tags
+  #match '/media' => 'home#media', :as => :media
+  
   #handling people who give us invalid routes
   match '*a', :to => 'error#routing'
 end

@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
 	//Initialize global variables
 	var tl;
 	var marker;
@@ -6,6 +7,55 @@
 	var point;
 	var infoBubble_flag = { };
 	var map;
+		
+	<% if !params[:q].blank?
+
+		q = params[:q] 
+		@type = params[:type]
+    	client = Instagram.client
+	    @searchparam = q
+		
+		if @type == "user"
+	    	@users = client.user_search(q) %>
+			document.getElementById("searchbar_notes").innerHTML ="Displaying <b><%= @users.count %></b> users for <b><%= q %></b>";
+		<% end
+		if @type == "tag"
+		
+			result = client.tag_recent_media(q)
+	    	@media = nil
+	    	if !result.nil?
+			    @media = result.data
+		    end
+			ugly_start_date = nil
+	    	ugly_end_date = nil
+
+			if !@media.nil?
+				@media.each do |media|
+
+					if ugly_start_date.nil? or (media.created_time < ugly_start_date and !media.created_time.nil?)
+	  					ugly_start_date = media.created_time
+					end
+					if ugly_end_date.nil? or (media.created_time >ugly_end_date and !media.created_time.nil?)
+	  					ugly_end_date = media.created_time
+					end	
+				end
+			end
+		
+			if ugly_start_date.nil?
+				ugly_start_date = 0
+			end
+			if ugly_end_date.nil?
+				ugly_end_date = 0
+			end		
+
+		    @start_date =Integer(ugly_start_date)
+		    @end_date = Integer(ugly_end_date)
+		    @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2%>
+		
+			document.getElementById("searchbar_notes").innerHTML ="Displaying <%= @media.count %> results for <b><%= @searchparam %></b>";
+		<% end
+	end	%>
+	//Insert code here to display username of results that are displayed
 
 	//Creating a timeline data object
 	var timeline_data = {
@@ -41,20 +91,6 @@
     		<% end %>
     	<% end %>
   	]};
-
-
-
-
-
-var resizeTimerID = null;
-function onResize() {
-    if (resizeTimerID == null) {
-        resizeTimerID = window.setTimeout(function() {
-            resizeTimerID = null;
-            tl.layout();
-        }, 500);
-    }
-}
 
 function load_event(img, tl){
 		
@@ -130,48 +166,46 @@ function load_event(img, tl){
 			infoBubble.close(map, mkr);
         });*/
 		
-		//var shift = tl.getBand(0).getEther.dateToPixelOffset(timeline_data.events[i].start);
-		//tl.getBand(0)._moveEther(10);
-		
-		//document.write(shift);
+		//Move timeline to center on date of image - make sure the input is a Javascript date object
+		var new_date = new Date(timeline_data.events[i].start);
+		tl.getBand(0).setCenterVisibleDate(new_date);
+
 		
 };
-
-function is_empty(obj) {
-
-    // Assume if it has a length property with a non-zero value
-    // that that property is correct.
-    if (obj.length && obj.length > 0)    return false;
-
-    for (var key in obj) {
-        if (hasOwnProperty.call(obj, key))    return false;
-    }
-
-    return true;
-};
-
-
-
-
 </script>
 
 <ul>
-    <% if @media %>
+	<% if @type == "user"  %>
+  		<% @users.each do |user| %>
+    	<li>
+    	    <a href="<%= user_path(user.id) %>" class="highlightit"><img src="<%= user.profile_picture %>" height="120" width="120" />
+    	    <p> <%= link_to user.username, user_path(user.id) %> </p></a>
+    	</li>
+ 		<% end %> 
 		
-	<% @media.each do |media| %>
-		<li>
-			<!-- <a href="<%= media.images.standard_resolution.url %>" rel="lightbox" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" rev="targetdiv:loadarea2,trigger:click,preload:none,fx:fade"> -->
-			
-				<a href="#" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this, tl)" onmouseover="load_event(this, tl)" /></a>
-		</li>
-		
+ 	<% end %>
+	<% if @type == "tag"  %>
+  		<% @media.each do |media| %>
+    		<li>
+    		    <a onclick="load_event(this, tl)" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this,tl)" onmouseover="load_event(this, tl)" /></a>
+    		</li>
+  		<% end  %>
 	<% end %>
-
+    <% if @media %>
+		<% @media.each do |media| %>
+			<li>
+				<!-- <a href="<%= media.images.standard_resolution.url %>" rel="lightbox" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" rev="targetdiv:loadarea2,trigger:click,preload:none,fx:fade"> -->
+				<a onclick="load_event(this, tl)" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this, tl)" onmouseover="load_event(this, tl)" /></a>
+			</li>
+		<% end %>
     <% end %>
 </ul>
+
+
+
 <script>
 // This is the function that loads the page
-function onLoad() {
+function onLoad(){
 
 	var eventSource = new Timeline.DefaultEventSource();
 	  
@@ -262,12 +296,12 @@ function onLoad() {
 	  
 		//function init() {
 			
-			map = new google.maps.Map(document.getElementById('map'), {
+			map = new google.maps.Map(document.getElementById("map"), {
     	    	zoom: 1,
-	        	enter: new google.maps.LatLng(0,0),
+	        	center: new google.maps.LatLng(0,0),
 	            mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
-		
+			
 	  		
 			var counter = 0;
 			var infoBubble = new Array();
@@ -433,4 +467,3 @@ function onLoad() {
 
 }
 </script>
-
