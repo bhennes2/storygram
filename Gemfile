@@ -19,6 +19,7 @@ end
 #gem 'mysql2'
 gem 'jquery-rails'
 gem 'instagram'
+gem 'rake', '0.9.2'
 
 # Use unicorn as the web server
 # gem 'unicorn'

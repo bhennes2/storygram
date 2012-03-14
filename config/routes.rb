@@ -1,4 +1,7 @@
 Instagram::Application.routes.draw do
+
+	resources :tales
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -62,6 +65,12 @@ Instagram::Application.routes.draw do
   match '/user' => 'home#user', :as => :self
   match '/search' => 'home#search', :as => :search
   match '/search_tags' => 'home#search_tags', :as => :search_tags
+  match '/signout' => 'home#destroy'
+  match '/mystories' => 'tales#mystories'
+  match '/save-story' => 'tales#save_story'
+  match '/delete' => 'tales#destroy'
+  match '/edit-story' => 'tales#edit'
+  match '/delete-story' => 'tales#destroy'
   #match '/media' => 'home#media', :as => :media
   
   #handling people who give us invalid routes

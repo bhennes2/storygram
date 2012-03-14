@@ -118,7 +118,7 @@ h2 {
 }
 
 #results {
-	height: 410px;
+	height: 350px;
 	float:left;
 	overflow-y: auto;
 	overflow-x: hidden;

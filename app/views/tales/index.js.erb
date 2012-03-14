@@ -1,0 +1,5 @@
+<script>
+	$('#viewing').hide();
+	$('#results').before('<div id="flash_notice"><%= escape_javascript(flash.delete(:notice)) %></div><br />');
+	$('#results').load('/mystories');
+</script>

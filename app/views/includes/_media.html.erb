@@ -7,20 +7,20 @@
 	var point;
 	var infoBubble_flag = { };
 	var map;
-		
+
 	<% if !params[:q].blank?
 
 		q = params[:q] 
 		@type = params[:type]
     	client = Instagram.client
 	    @searchparam = q
-		
+
 		if @type == "user"
 	    	@users = client.user_search(q) %>
 			document.getElementById("searchbar_notes").innerHTML ="Displaying <b><%= @users.count %></b> users for <b><%= q %></b>";
 		<% end
 		if @type == "tag"
-		
+
 			result = client.tag_recent_media(q)
 	    	@media = nil
 	    	if !result.nil?
@@ -40,7 +40,7 @@
 					end	
 				end
 			end
-		
+
 			if ugly_start_date.nil?
 				ugly_start_date = 0
 			end
@@ -51,7 +51,7 @@
 		    @start_date =Integer(ugly_start_date)
 		    @end_date = Integer(ugly_end_date)
 		    @middle_date = (Integer(ugly_start_date) + Integer(ugly_end_date )) / 2%>
-		
+
 			document.getElementById("searchbar_notes").innerHTML ="Displaying <%= @media.count %> results for <b><%= @searchparam %></b>";
 		<% end
 	end	%>
@@ -93,7 +93,7 @@
   	]};
 
 function load_event(img, tl){
-		
+
 		var i;
 		for (i=0; i <= timeline_data.events.length; i++)
 		{				
@@ -102,7 +102,7 @@ function load_event(img, tl){
 				break;
 			}
 		}
-				
+
 		if ( timeline_data.events[i].lat !=0 && timeline_data.events[i].lng != 0)
 		{
 			var pt = new google.maps.LatLng(timeline_data.events[i].lat, timeline_data.events[i].lng);
@@ -118,10 +118,10 @@ function load_event(img, tl){
 			var arrowStyle = 3;
 		}
 
-		
-		
+
+
 		var content = '<div class="infobubble"><img id="map_image" src="' + img.src + '" width="300" height="300" onclick="close" /><p>' + timeline_data.events[i].title + '</p></div>';
-		
+
 		infoBubble = new InfoBubble({
 			map: map,
 			content: content,
@@ -139,7 +139,7 @@ function load_event(img, tl){
 			backgroundClassName: 'phoney',
 			arrowStyle: arrowStyle
 		});	
-		
+
 		if ( arrowStyle == 2 ) {
         	infoBubble.open(map, mkr);
 		}
@@ -147,30 +147,30 @@ function load_event(img, tl){
 			infoBubble.open();
 		}
 		var ctr = new google.maps.LatLng((pt.lat()+25),(pt.lng()+15));
-		
+
 		map.setCenter(ctr);
 		map.setZoom(3);
-		
+
 		if ( !is_empty(infoBubble_flag) )
 		{
 			infoBubble_flag.close();
 			infoBubble_flag = {};
 		}
-		
+
 		/*Set flag to infoBubble for new image displayed*/
 		infoBubble_flag = infoBubble;
-				
+
 		/*Listen for user click on map to close any open info bubbles
         google.maps.event.addListener(map, 'center_changed', function () { 
 			//document.write("hello");
 			infoBubble.close(map, mkr);
         });*/
-		
+
 		//Move timeline to center on date of image - make sure the input is a Javascript date object
 		var new_date = new Date(timeline_data.events[i].start);
 		tl.getBand(0).setCenterVisibleDate(new_date);
 
-		
+
 };
 </script>
 
@@ -182,7 +182,7 @@ function load_event(img, tl){
     	    <p> <%= link_to user.username, user_path(user.id) %> </p></a>
     	</li>
  		<% end %> 
-		
+
  	<% end %>
 	<% if @type == "tag"  %>
   		<% @media.each do |media| %>
@@ -192,11 +192,30 @@ function load_event(img, tl){
   		<% end  %>
 	<% end %>
     <% if @media %>
-		<% @media.each do |media| %>
-			<li>
-				<!-- <a href="<%= media.images.standard_resolution.url %>" rel="lightbox" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" rev="targetdiv:loadarea2,trigger:click,preload:none,fx:fade"> -->
-				<a onclick="load_event(this, tl)" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this, tl)" onmouseover="load_event(this, tl)" /></a>
-			</li>
+		<% if params[:mode] == "tale" %>
+			<% @media.each do |media| %>
+
+					<% if !@images.nil? %>
+						<% if @images.include?(media.images.low_resolution.url) %>
+							<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()" >
+							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" style="border: 5px solid green;" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>
+						<% else %>
+							<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()" class="no-tale" >
+							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>				
+						<% end %>
+					<% else %>
+						<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()">
+						<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>				
+					<% end %>
+					<p style="display: none;"><a onclick="add_url('<%= media.images.low_resolution.url %>','<%= media.id %>')">ADD</a> | <a onclick="remove_url('<%= media.images.low_resolution.url %>','<%= media.id %>')">REMOVE</a></p>
+				</li>
+			<% end %>
+		<% else %>
+			<% @media.each do |media| %>
+				<li>
+					<a onclick="load_event(this, tl)" class="highlightit"><img border="0" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this, tl)" onmouseover="load_event(this, tl)" /></a>
+				</li>
+			<% end %>
 		<% end %>
     <% end %>
 </ul>
@@ -208,22 +227,22 @@ function load_event(img, tl){
 function onLoad(){
 
 	var eventSource = new Timeline.DefaultEventSource();
-	  
+
 	var theme1 = Timeline.ClassicTheme.create();
-	
+
 	<% if @type != "user" %>
 		theme1.timeline_start = new Date(Date.UTC(<%= Time.at(@start_date).year %>,<%= Time.at(@start_date).month - 1 %>,<%= Time.at(@start_date).day - 10 %>));
 		theme1.timeline_stop = new Date(Date.UTC(<%= Time.at(@end_date).year %>,<%= Time.at(@end_date).month - 1 %>,<%= Time.at(@end_date).day + 10 %>));
 	<% end %>
-	  
+
 	theme1.autoWidth = false;
-		
+
 	theme1.event.instant.icon = "no-image-40.png";
 
 	theme1.event.instant.iconWidth = 15;
 	theme1.event.instant.incoHeight = 15;
-	  
-	  
+
+
 	var bandInfos = [
 	  	Timeline.createBandInfo({
 	    	timeZone:       -5,
@@ -246,7 +265,7 @@ function onLoad(){
                 	{pixelsPerInterval: 40, unit: Timeline.DateTime.HOUR},
                 	{pixelsPerInterval: 20, unit: Timeline.DateTime.HOUR},
                 	{pixelsPerInterval: 100, unit: Timeline.DateTime.DAY}    // default display
-					
+
 	          	),      
               
             eventPainter:   Timeline.CompactEventPainter,
@@ -288,29 +307,29 @@ function onLoad(){
 	  var url = "http://localhost:3000";
 	  tl = Timeline.create(document.getElementById("timeline"), bandInfos);
 	  eventSource.loadJSON(timeline_data, url);
-	  
-		
+
+
 	//Google Maps
 	if (GBrowserIsCompatible()) {
-	  
-	  
+
+
 		//function init() {
-			
+
 			map = new google.maps.Map(document.getElementById("map"), {
     	    	zoom: 1,
 	        	center: new google.maps.LatLng(0,0),
 	            mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
-			
-	  		
+
+
 			var counter = 0;
 			var infoBubble = new Array();
 			//var point = new Array();
 			var content;
-		
+
 			//var marker = new Array();
-		
-		
+
+
 			//map.enableScrollWheelZoom();
 			//map.addControl(new GLargeMapControl());
 
@@ -326,9 +345,9 @@ function onLoad(){
           					position: point,
 							zIndex: counter 
 						});
-					
+
 					var content = '<div class="infobubble"><img src="<%= media.images.thumbnail.url %>" width="300" height="300" onclick="close" /><p>' + timeline_data.events[counter].title + '</p></div>';
-									
+
 					infoBubble[marker.zIndex] = new InfoBubble({
           					map: map,
           					content: content,
@@ -346,34 +365,34 @@ function onLoad(){
           					backgroundClassName: 'phoney',
           					arrowStyle: 2
         			});	
-					
+
 					google.maps.event.addListener(marker, 'mouseover', function() {
 						 infoBubble[this.zIndex].open(map, this);
 						 var ctr = new google.maps.LatLng((this.position.lat()+25),(this.position.lng()+15));
-		
+
 				         map.setCenter(ctr);
 						 map.setZoom(3);
-						 
+
 						if ( !is_empty(infoBubble_flag) )
 						{
 							infoBubble_flag.close();
 						}			
-						
+
 						/*Set flag to infoBubble for new image displayed*/
 						infoBubble_flag = infoBubble[this.zIndex];
-						
-						 
+
+
         			});	
-									
+
 					google.maps.event.addListener(marker, 'click', function() {
           				 infoBubble[this.zIndex].close();
           			});
 					counter++;
-					
+
 				<%end%>
 
 			<% end %>
-			
+
         <% end %>
 		/*
 			var counter = 0;
@@ -415,9 +434,9 @@ function onLoad(){
  
      
       	 	
-		
-		
-			
+
+
+
 			/*
 			
 			
@@ -461,9 +480,42 @@ function onLoad(){
 		*/
 		//google.maps.event.addDomListener(window, 'load', init());		
 		//}
-		
-		
+
+
 		return tl;
 
 }
+<% if !@images.nil? %>
+	var image_urls = [<% @images.each do |image| %>
+							"<%= image %>"
+						<% if image != @images.last %>,<% end %>
+						<% end %>
+						];
+<% else %>
+	var image_urls = [];
+<% end %>
+function add_url(url, id){
+	image_urls.push(url);
+	$('#'+id).css({border: '5px solid #31B404'});
+	if (image_urls.length == 0){
+		$('#save_images').hide();
+	}
+	else{
+		$('#save_images').html('<p>Saving '+image_urls.length+' images to story</p>').show();
+	}
+};
+function remove_url(url, id){
+	for ( var i=0; i <= image_urls.length; i++){
+		if (image_urls[i] == url){
+			image_urls.splice(i,1);
+		}
+	}
+	$('#'+id).css({border: 'none'});
+	if (image_urls.length == 0){
+		$('#save_images').hide();
+	}
+	else{
+		$('#save_images').html('<p>Saving '+image_urls.length+' images to story</p>').show();
+	}
+};
 </script>

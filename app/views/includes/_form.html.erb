@@ -1,0 +1,29 @@
+<p>Editing story title: <%= @tale.title %></p><br />
+<div id="new-tale">
+	<%= form_for(@tale) do |f| %>
+		<div class="field">
+    		<%= f.label :title %><br />
+		    <%= f.text_field :title, :size => 30 %>
+		</div>
+  		<div class="field">
+    		<%= f.label :description %><br />
+		    <%= f.text_area :description, :rows => 5, :cols => 30 %>
+  		</div>
+		<div class="field">
+    		<%= f.label :date %><br />
+		    <%= f.text_field :date, :size => 30 %>
+		</div>
+		<%= f.text_field :user_id, :value => Instagram.client(:access_token => session[:access_token]).user.id, :style => 'display: none;' %>
+		<div class="actions">
+    		<%= f.submit "Update it" %>
+  		</div>
+<% end %>
+</div>
+
+<script>
+	$('#tale_date').datepicker({ dateFormat: 'yy-mm-dd' });
+	$(".edit_tale").submit(function(){
+		$.post($(this).attr("action")+".js", $(this).serialize(), null, "script");
+		return false;
+	})
+</script>

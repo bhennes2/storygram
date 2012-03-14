@@ -107,6 +107,7 @@ class HomeController < ApplicationController
     if (params[:code])
         response = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
         session[:access_token] = response.access_token
+		client = Instagram.client(:access_token => session[:access_token])
 
         #TODO - for now, authentication redirects you to your own page (even if you were trying to see someone else's)
         redirect_to user_path("self")
@@ -203,5 +204,10 @@ class HomeController < ApplicationController
 	
 	
   end
+  	
+	def destroy
+		session[:access_token] = nil
+		redirect_to root_url
+	end
 
 end

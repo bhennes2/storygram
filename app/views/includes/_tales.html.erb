@@ -1,0 +1,69 @@
+<% @tales = Tale.where(:user_id => Instagram.client(:access_token => session[:access_token]).user.id) %>
+<% if @tales == [] %>
+	<p>No stories yet...let's create a <a onclick="$('#new-tale').show()">new </a>one</p>
+<% else %>
+	<p>Create a new story <a onclick="create_story()">here</a></p>
+	<p>See my existing <a onclick="show_story()"><%= pluralize(@tales.count,'story') %></a></p><br />
+	<ul id="current">
+		<% @tales.each do |tale| %>
+			<li class="tale" onmouseover="$('#<%= tale.id %>').show()" onmouseout="$('#<%= tale.id %>').hide()">
+					<% if tale.images.nil? %>
+						<img class="story" id="story<%= tale.id %>" src="/images/tale.png" width="100px" height="100px" /><br />
+					<% else %>
+						<img class="story" id="story<%= tale.id %>" src="<%= tale.images.split(',')[0] %>" width="100px" height="100px" /><br />
+					<% end %>
+					<a href="<%= tales_path %>?mode=tale&story=<%= tale.id %>" >
+						<%= tale.title %> <% if !tale.images.nil? %>(<%= tale.images.split(',').size %>)<% end %><br />
+					</a>
+					<div id="<%= tale.id %>" style="display: none;" >
+						<a onclick="$('#results').load('/edit-story?id=<%= tale.id %>')">Edit</a> | <a onclick="$('#results').load('/delete-story?id=<%= tale.id %>')">Destroy</a> 
+					</div>					
+				<% if !tale.date.nil? %>
+					<%= tale.date.to_date.strftime('%b %-d, %Y') %>
+				<% end %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
+<div id="new-tale" style="display: none;">
+	<%= form_for(@tale) do |f| %>
+		<div class="field">
+    		<%= f.label :title %><br />
+		    <%= f.text_field :title, :size => 30 %>
+		</div>
+  		<div class="field">
+    		<%= f.label :description %><br />
+		    <%= f.text_area :description, :rows => 5, :cols => 30 %>
+  		</div>
+		<div class="field">
+    		<%= f.label :date %><br />
+		    <%= f.text_field :date, :size => 30 %>
+		</div>
+		<%= f.text_field :user_id, :value => Instagram.client(:access_token => session[:access_token]).user.id, :style => 'display: none;' %>
+		<div class="actions">
+    		<%= f.submit "Write it" %>
+  		</div>
+<% end %>
+
+</div>
+
+<script>
+	function create_story(){
+		$('#new-tale').slideDown();
+		$('#current').hide();
+	};
+	function show_story(){
+		$('#new-tale').hide();
+		$('#current').slideDown();
+	};
+	$('#tale_date').datepicker({ dateFormat: 'yy-mm-dd' });
+
+	
+	$(document).ready(function(){
+	$("#new_tale").submit(function(){
+		$.post($(this).attr("action")+".js", $(this).serialize(), null, "script");
+		return false;
+	})
+});
+</script>
