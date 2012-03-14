@@ -198,14 +198,14 @@ function load_event(img, tl){
 					<% if !@images.nil? %>
 						<% if @images.include?(media.images.low_resolution.url) %>
 							<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()" >
-							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" style="border: 5px solid green;" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>
+							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" style="border: 5px solid green;" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this,tl)"/></a>
 						<% else %>
 							<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()" class="no-tale" >
-							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>				
+							<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this,tl)"/></a>				
 						<% end %>
 					<% else %>
 						<li onmouseover="$(this).children('p').show()" onmouseout="$(this).children('p').hide()">
-						<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this4,tl)"/></a>				
+						<a onclick="load_event(this, tl)" ><img id="<%= media.id %>" src="<%= media.images.low_resolution.url %>" title="<% if !media.caption.nil?%><%= media.caption.text %><% end %>" width="120" height="120" onclick="load_event(this,tl)"/></a>				
 					<% end %>
 					<p style="display: none;"><a onclick="add_url('<%= media.images.low_resolution.url %>','<%= media.id %>')">ADD</a> | <a onclick="remove_url('<%= media.images.low_resolution.url %>','<%= media.id %>')">REMOVE</a></p>
 				</li>
